@@ -51,6 +51,9 @@ Repository for our Summer Project
   }
   ```
   All this function currently does is start up the serial port. It will be used more when we need to initate servo motors for door locks. 
+  
+  Serial libary refernce: 
+  https://www.arduino.cc/reference/en/language/functions/communication/serial/
  ## Loop
   ```C++
   void loop() {
@@ -73,6 +76,12 @@ Repository for our Summer Project
   - Assign global variables for sensor and time
   - runs functions to get deltas
   - runs function to compare deltas to pattern
+
+millis libary reference: 
+https://www.arduino.cc/reference/en/language/functions/time/millis/
+
+analogRead library reference: 
+https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/
 
  ## Current Delta
   ```C++
