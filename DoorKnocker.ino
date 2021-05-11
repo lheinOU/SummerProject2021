@@ -1,1 +1,93 @@
-//external libraries #include <Servo.h>//Define input pins for devicesconst int _piezoSensorPin = A3;const int _ServoOutputPin = 2;//Define threshold value for reading a valueconst int threshold = 50;//Create Servo Object Servo doorLock; //Define starting servo position to resetint lockPosition = 0;int currStep = 0;int KnockPatternDelta[] = {0,1,0,1,0,1};int timePatternDelta[] = {0,-1,1,1,-1,0};int lastKnock;int sensorReading;int currKnockDelta;unsigned long lastTime;unsigned long currTime;int lastTimeDelta; int currTimeDelta;void setup() {    //Start serial debug    Serial.begin(9600);    //attach input pin to servo object     doorLock.attach(_ServoOutputPin);    doorLock.write(lockPosition);}void loop() {      currTime = millis();      sensorReading = analogRead(_piezoSensorPin);      if(sensorReading >= threshold){        KnockDetector(sensorReading);       }      }void KnockDetector(int sensorReading){  if(currStep != 0){    if(lastKnock< sensorReading){ currKnockDelta = 1;}    else{currKnockDelta = -1;}    TimeDetector();  }  else if (currStep >= sizeof(KnockPatternDelta +1)){   //Pattern Success, open lock    Serial.println("Pattern Matched");    ControlLock(180);    currStep = 0;  }  else{    //set initial values    Serial.println("Writing Initial Values");    lastKnock = sensorReading;    lastTime = currTime;     lastTimeDelta = 0;  }}void TimeDetector(){   if(currStep != 1){                if((currTime - lastTime) < lastTimeDelta){currTimeDelta = -1;}        else{ currTimeDelta = 1;};        CalculateSuccess();      }      else{lastTimeDelta = currTime - lastTime;}}void CalculateSuccess(){  //if both conditions met  if(currKnockDelta == KnockPatternDelta[currStep] && currTimeDelta == timePatternDelta[currStep]){    Serial.println("Criteria met");    currStep ++;    lastKnock = sensorReading;     lastTime = currTime;     lastTimeDelta = currTimeDelta;  }  else{    Serial.println("Failure. Try again");    currStep = 0;    lastKnock = 0;    currKnockDelta = 0;    lastTime = 0;     lastTimeDelta = 0;   }}void ControlLock(int lockPosition){   //controled servo movement   Serial.println("Lock control engaged");  doorLock.write(lockPosition);}
+//Constants
+const int PiezoInputPin = A3;
+
+
+//Variables
+int kPattern[5] = { 0,1,-1,1,1 };
+int tPattern[5] = { 0,1,1,-1,-1 };
+
+int lastKnockDelta = NULL;
+int lastTimeDelta = NULL;
+
+int lastKnock = NULL;
+int currKnock = NULL;
+int lastTime = NULL;
+int currTime = NULL;
+int currStep = 0;
+
+bool DoorOpen;
+void setup() {
+	Serial.begin(9600);
+}
+void loop() {
+	//Check to see if Door is open
+	if (!DoorOpen) {
+		unsigned long time = millis();
+		int sensor = analogRead(PiezoInputPin);
+		currKnock = sensor;
+		currTime = time;
+		int currKnockDelta = CurrentDelta('k', sensor, lastKnock, lastKnockDelta);
+		int currTimeDelta = CurrentDelta('t', time, lastTime, lastTimeDelta);
+
+		PatternMatcher(currKnockDelta, currTimeDelta, currStep);
+	}
+}
+
+int CurrentDelta(char pType, int input, int lastInput, int lastDelta) {
+	//Check to see if we are in step 0
+	if (lastDelta != NULL) {
+		int x = input = lastInput;
+		if (x > lastDelta) { return 1; }
+		else { return -1; }
+	}
+	else {
+		//sets intial values
+		switch (pType) {
+		case 'k':
+			//k = KNOCK
+			lastKnockDelta = 0;
+			lastKnock = input;
+			break;
+		case 't':
+			//t = TIME
+			lastTimeDelta = 0;
+			lastTime = input;
+			break;
+		}
+		currStep = 1;
+		return NULL;
+	}
+}
+
+void PatternMatcher(int kDelta, int tDelta, int step) {
+	//check to make sure there is something to compare
+	if (kDelta != NULL || tDelta != NULL) {
+		if (step < sizeof(kPattern + 1)) {
+			//Check if both patterns are matched
+			if (kDelta == kPattern[step] && tDelta == tPattern[step]) {				
+				lastKnock = currKnock;
+				lastTime = currTime; 
+				step++;
+			}
+			else {
+				Serial.println("Failure...Reseting...");
+				//Failure, reset
+				currStep = 0;
+				lastKnock = NULL;
+				lastKnockDelta = NULL;
+				lastTime = NULL;
+				lastTimeDelta = NULL;
+				
+			}
+		}
+		else {
+			//Completed all steps
+			OpenLock();
+		}
+	}
+	else { return; }
+	
+}
+void OpenLock() {
+	//TODO Lock controls
+}
