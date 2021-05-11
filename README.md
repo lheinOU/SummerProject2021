@@ -124,7 +124,7 @@ void PatternMatcher(int kDelta, int tDelta, int step) {
 				lastTime = currTime;
         lastKnockDelta = kDelta;
         lastTimeDelta = tDelta;
-				step++;
+				currStep++;
 			}
 			else {
 				Serial.println("Failure...Reseting...");
