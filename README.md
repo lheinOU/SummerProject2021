@@ -1,6 +1,5 @@
-# SummerProject2021
-Repository for our Summer Project
- 
+#Logan's Repository
+
  # Code Breakdown
  
    ## Constants
