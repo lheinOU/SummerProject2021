@@ -5,8 +5,8 @@ const int PiezoInputPin = A3;
 int kPattern[5] = { 0,1,-1,1,1 };
 int tPattern[5] = { 0,1,1,-1,-1 };
 
-int lastKnockDelta = NULL;
-int lastTimeDelta = NULL;
+int currKnockDelta = NULL;
+int currTimeDelta = NULL;
 
 int lastKnock = NULL;
 int currKnock = NULL;
@@ -44,12 +44,12 @@ int CurrentDelta(char pType, int input, int lastInput, int lastDelta) {
 		switch (pType) {
 		case 'k':
 			//k = KNOCK
-			lastKnockDelta = 0;
+			currKnockDelta = 0;
 			lastKnock = input;
 			break;
 		case 't':
 			//t = TIME
-			lastTimeDelta = 0;
+			currTimeDelta = 0;
 			lastTime = input;
 			break;
 		}
@@ -73,9 +73,9 @@ void PatternMatcher(int kDelta, int tDelta, int step) {
 				//Failure, reset
 				currStep = 0;
 				lastKnock = NULL;
-				lastKnockDelta = NULL;
+				currKnockDelta = NULL;
 				lastTime = NULL;
-				lastTimeDelta = NULL;
+				currTimeDelta = NULL;
 				
 			}
 		}
