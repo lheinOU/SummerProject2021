@@ -52,7 +52,7 @@ Repository for our Summer Project
   ```
   All this function currently does is start up the serial port. It will be used more when we need to initate servo motors for door locks. 
   
-  Serial libary refernce: 
+  Serial libary reference: 
   https://www.arduino.cc/reference/en/language/functions/communication/serial/
  ## Loop
   ```C++
