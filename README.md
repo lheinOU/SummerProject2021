@@ -83,7 +83,7 @@ https://www.arduino.cc/reference/en/language/functions/time/millis/
 analogRead library reference: 
 https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/
 
- ## Current Delta
+ ## CurrentDelta
   ```C++
 int CurrentDelta(char pType, int input, int lastInput, int lastDelta) {
 	//Check to see if we are in step 0
