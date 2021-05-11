@@ -5,8 +5,8 @@ const int PiezoInputPin = A3;
 int kPattern[5] = { 0,1,-1,1,1 };
 int tPattern[5] = { 0,1,1,-1,-1 };
 
-int currKnockDelta = NULL;
-int currTimeDelta = NULL;
+int lastKnockDelta = NULL;
+int lastTimeDelta = NULL;
 
 int lastKnock = NULL;
 int currKnock = NULL;
@@ -44,12 +44,12 @@ int CurrentDelta(char pType, int input, int lastInput, int lastDelta) {
 		switch (pType) {
 		case 'k':
 			//k = KNOCK
-			currKnockDelta = 0;
+			lastKnockDelta = 0;
 			lastKnock = input;
 			break;
 		case 't':
 			//t = TIME
-			currTimeDelta = 0;
+			lastTimeDelta = 0;
 			lastTime = input;
 			break;
 		}
@@ -66,16 +66,18 @@ void PatternMatcher(int kDelta, int tDelta, int step) {
 			if (kDelta == kPattern[step] && tDelta == tPattern[step]) {				
 				lastKnock = currKnock;
 				lastTime = currTime; 
-				step++;
+				lastKnockDelta = kDelta;
+				lastTimeDelta = tDelta;
+				currStep++;
 			}
 			else {
 				Serial.println("Failure...Reseting...");
 				//Failure, reset
 				currStep = 0;
 				lastKnock = NULL;
-				currKnockDelta = NULL;
+				lastKnockDelta = NULL;
 				lastTime = NULL;
-				currTimeDelta = NULL;
+				lastTimeDelta = NULL;
 				
 			}
 		}
