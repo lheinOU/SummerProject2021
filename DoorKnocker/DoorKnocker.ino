@@ -1,6 +1,6 @@
 //Constants
 const int PiezoInputPin = A3;
-
+//ahhhhhhh
 //Variables
 int kPattern[5] = { 0,1,-1,1,1 };
 int tPattern[5] = { 0,1,1,-1,-1 };
